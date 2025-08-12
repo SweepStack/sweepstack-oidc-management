@@ -1,0 +1,60 @@
+name: "Terraform CI/CD"
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+      - ".gitignore"
+
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - ".gitignore"
+
+jobs:
+  # This job runs CI checks on all pushes and PRs.
+  ci_checks:
+    name: "Terraform CI Checks"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout Code"
+        uses: actions/checkout@v4
+
+      - name: "Setup Terraform"
+        uses: hashicorp/setup-terraform@v3
+        with:
+          cli_config_credentials_token: ${{secrets.HCP_API_TOKEN}}
+
+      - name: "Terraform Format Check"
+        id: fmt
+        run: terraform fmt -check -recursive
+
+      - name: "Terraform Init"
+        id: init
+        run: terraform init
+
+      - name: "Terraform Validate"
+        id: validate
+        run: terraform validate
+
+  # This job triggers the HCP run, but ONLY on a push to the main branch.
+  trigger_hcp_run:
+    name: "Trigger HCP Deployment"
+    needs: [ci_checks] # This job depends on the CI checks passing
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout Code"
+        uses: actions/checkout@v4
+
+      - name: Create Apply Run
+        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
+        id: apply-run
+        with:
+          organization: "sweepstack-alpha"
+          workspace: "sweepstack-cognito-infra"
+          message: ${{github.event.head_commit.message}} # This uses the GH commit as the HCP run subject
