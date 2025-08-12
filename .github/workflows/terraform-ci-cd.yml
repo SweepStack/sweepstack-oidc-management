@@ -27,7 +27,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           cli_config_credentials_token: ${{secrets.HCP_API_TOKEN}}
-;
+
       - name: "Terraform Format Check"
         id: fmt
         run: terraform fmt -check -recursive
