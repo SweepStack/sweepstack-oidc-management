@@ -13,6 +13,11 @@ on:
       - "**.md"
       - ".gitignore"
 
+env:
+  TF_API_TOKEN: ${{secrets.HCP_API_TOKEN}}
+  TF_CLOUD_ORGANIZATION: "sweepstack-alpha"
+  TF_WORKSPACE_NAME: "sweepstack-oidc-management"
+
 jobs:
   # This job runs CI checks on all pushes and PRs.
   ci_checks:
@@ -26,7 +31,7 @@ jobs:
       - name: "Setup Terraform"
         uses: hashicorp/setup-terraform@v3
         with:
-          cli_config_credentials_token: ${{secrets.HCP_API_TOKEN}}
+          cli_config_credentials_token: ${{env.TF_API_TOKEN}}
 
       - name: "Terraform Format Check"
         id: fmt
@@ -53,10 +58,6 @@ jobs:
 
       - name: "Check For Existing Runs"
         id: check-runs
-        env:
-          TF_API_TOKEN: ${{secrets.HCP_API_TOKEN}}
-          TF_CLOUD_ORGANIZATION: "sweepstack-alpha"
-          TF_WORKSPACE_NAME: "sweepstack-oidc-management"
         run: |
           WORKSPACE_ID=$(curl -s -H "Authorization: Bearer $TF_API_TOKEN" \
             "https://app.terraform.io/api/v2/organizations/$TF_CLOUD_ORGANIZATION/workspaces/$TF_WORKSPACE_NAME" | jq -r '.data.id')
