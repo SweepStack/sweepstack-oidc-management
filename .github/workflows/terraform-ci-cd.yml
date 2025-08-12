@@ -71,7 +71,7 @@ jobs:
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.3.2
         with:
           workspace: ${{env.TF_WORKSPACE_NAME}}
-          directory: "/terraform"
+          directory: "./terraform"
 
       - name: "Create Terraform Run"
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.2
