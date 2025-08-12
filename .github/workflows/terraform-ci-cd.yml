@@ -55,6 +55,7 @@ jobs:
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
         id: apply-run
         with:
+          token: ${{secrets.HCP_API_TOKEN}}
           organization: "sweepstack-alpha"
-          workspace: "sweepstack-cognito-infra"
+          workspace: "sweepstack-oidc-infra"
           message: ${{github.event.head_commit.message}} # This uses the GH commit as the HCP run subject
