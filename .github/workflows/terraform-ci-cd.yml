@@ -33,6 +33,10 @@ jobs:
         with:
           cli_config_credentials_token: ${{env.TF_API_TOKEN}}
 
+      - name: "Get to Terraform directory"
+        run: |
+          cd ./terraform
+
       - name: "Terraform Format Check"
         id: fmt
         run: terraform fmt -check -recursive
@@ -73,10 +77,9 @@ jobs:
           workspace: ${{env.TF_WORKSPACE_NAME}}
           directory: "./terraform"
 
-      - name: "Where am i"
+      - name: "Get to Terraform directory"
         run: |
-          pwd
-          ls
+          cd ./terraform
 
       - name: "Create Terraform Run"
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.2
