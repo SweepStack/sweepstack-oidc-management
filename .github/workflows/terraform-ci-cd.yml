@@ -73,6 +73,11 @@ jobs:
           workspace: ${{env.TF_WORKSPACE_NAME}}
           directory: "./terraform"
 
+      - name: "Where am i"
+        run: |
+          pwd
+          ls
+
       - name: "Create Terraform Run"
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.2
         with:
