@@ -36,14 +36,17 @@ jobs:
       - name: "Terraform Format Check"
         id: fmt
         run: terraform fmt -check -recursive
+        working-directory: ./terraform
 
       - name: "Terraform Init"
         id: init
         run: terraform init
+        working-directory: ./terraform
 
       - name: "Terraform Validate"
         id: validate
         run: terraform validate
+        working-directory: ./terraform
 
   # This job triggers the HCP run, but ONLY on a push to the main branch.
   trigger_hcp_run:
@@ -56,27 +59,11 @@ jobs:
       - name: "Checkout Code"
         uses: actions/checkout@v4
 
-      - name: "Check For Existing Runs"
-        id: check-runs
-        run: |
-          WORKSPACE_ID=$(curl -s -H "Authorization: Bearer $TF_API_TOKEN" \
-            "https://app.terraform.io/api/v2/organizations/$TF_CLOUD_ORGANIZATION/workspaces/$TF_WORKSPACE_NAME" | jq -r '.data.id')
-          RUN_COUNT=$(curl -s -H "Authorization: Bearer $TF_API_TOKEN" \
-            "https://app.terraform.io/api/v2/workspaces/$WORKSPACE_ID/runs" | jq -r '.data | length')
-          echo "Found $RUN_COUNT runs in the workspace $TF_WORKSPACE_NAME"
-          echo "run_count=$RUN_COUNT" >> $GITHUB_OUTPUT
-
       - name: "Upload Configuration"
-        if: steps.check-runs.outputs.run_count == '0'
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.3.2
         with:
           workspace: ${{env.TF_WORKSPACE_NAME}}
           directory: "./terraform"
-
-      - name: "Where am i"
-        run: |
-          pwd
-          ls
 
       - name: "Create Terraform Run"
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.3.2
