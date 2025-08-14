@@ -4,17 +4,10 @@ resource "aws_secretsmanager_secret" "terraformApiKey" {
 
 resource "aws_secretsmanager_secret_version" "terraformApiKeyVersion" {
   secret_id     = aws_secretsmanager_secret.terraformApiKey.id
-  secret_string = jsonencode("thisisasecret")
-}
-
-data "aws_secretsmanager_secret" "terraformApiKey" {
-  arn = aws_secretsmanager_secret.terraformApiKey.arn
-}
-
-data "aws_secretsmanager_secret_version" "terraformApiKeyVersion" {
-  secret_id = aws_secretsmanager_secret.terraformApiKey.id
+  secret_string = "thisisasecret"
 }
 
 output "secretData" {
-  value = data.aws_secretsmanager_secret_version.terraformApiKeyVersion.secret_string
+  description = "The secret data for the Terraform API key"
+  value       = aws_secretsmanager_secret_version.terraformApiKeyVersion.secret_string
 }
