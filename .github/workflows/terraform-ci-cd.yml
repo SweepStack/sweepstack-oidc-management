@@ -15,8 +15,9 @@ on:
 
 env:
   TF_API_TOKEN: ${{secrets.HCP_API_TOKEN}}
+  # TFE_TOKEN: ${{secrets.HCP_API_TOKEN}}
   TF_CLOUD_ORGANIZATION: "sweepstack-alpha"
-  TF_WORKSPACE_NAME: "sweepstack-oidc-management"
+  TF_WORKSPACE_NAME: "sweepstack-oidc-management-hcp-aws"
 
 jobs:
   # This job runs CI checks on all pushes and PRs.
