@@ -76,7 +76,7 @@ data "aws_iam_policy_document" "oidc_full_permissions_policy_document" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "oidc_iam_permissions_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "oidc_full_permissions_policy_attachment" {
   role       = aws_iam_role.oidc_terraform_connector_iam.name
   policy_arn = aws_iam_policy.oidc_full_permissions_policy.arn
 }
