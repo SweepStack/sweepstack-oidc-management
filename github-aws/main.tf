@@ -2,7 +2,7 @@ terraform {
   cloud {
     organization = "sweepstack-alpha"
     workspaces {
-      name = "sweepstack-oidc-management"
+      name = "sweepstack-oidc-management-gh-aws"
     }
   }
   required_providers {
