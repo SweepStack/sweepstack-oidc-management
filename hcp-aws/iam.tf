@@ -62,16 +62,21 @@ resource "aws_iam_role" "oidc_terraform_connector_full_perm" {
   assume_role_policy = data.aws_iam_policy_document.oidc_assume_role_policy.json
 }
 
-resource "aws_iam_policy" "oidc_iam_permissions_policy" {
+resource "aws_iam_policy" "oidc_full_permissions_policy" {
   name        = "oidc-full-permissions"
   description = "Permissions HCP Terraform OIDC connector to create and manage any AWS resource (look to trim this down later)"
-  policy      = data.aws_iam_policy_document.oidc_full_permissions_policy.json
+  policy      = data.aws_iam_policy_document.oidc_full_permissions_policy_document.json
 }
 
-data "aws_iam_policy_document" "oidc_full_permissions_policy" {
+data "aws_iam_policy_document" "oidc_full_permissions_policy_document" {
   statement {
     effect    = "Allow"
     actions   = ["*"]
     resources = ["*"]
   }
+}
+
+resource "aws_iam_role_policy_attachment" "oidc_full_permissions_policy_attachment" {
+  role       = aws_iam_role.oidc_terraform_connector_iam.name
+  policy_arn = aws_iam_policy.oidc_full_permissions_policy.arn
 }
